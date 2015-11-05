@@ -1,9 +1,12 @@
 # Build using: docker build -f Dockerfile.gocd-agent -t gocd-agent .
 FROM phusion/baseimage:0.9.16
-MAINTAINER Aravind SV <arvind.sv@gmail.com>
+MAINTAINER Santiago Baldrich <santiago.baldrich@gmail.com>
 
 RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
-RUN apt-get update && apt-get install -y -q unzip openjdk-7-jre-headless git
+
+RUN add-apt-repository ppa:webupd8team/java && apt-get -y -q update && \
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
+apt-get install -y -q git oracle-java8-installer maven2 && update-java-alternatives -s java-8-oracle
 
 RUN mkdir /etc/service/go-agent
 ADD gocd-agent/go-agent-start.sh /etc/service/go-agent/run
